@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Pollo Loco</title>
+    <link rel="icon" type="image/x-icon" href="img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/fonts-zabras.css">
+    <script src="javaScript/classes/world.class.js"></script>
+    <script src="javaScript/classes/drawableObjects.class.js"></script>
+    <script src="javaScript/classes/startScreen.class.js"></script>
+    <script src="javaScript/classes/endScreen.class.js"></script>
+    <script src="javaScript/classes/movableObjects.class.js"></script>
+    <script src="javaScript/classes/backgroundObjects.class.js"></script>
+    <script src="javaScript/classes/keyboard.class.js"></script>
+    <script src="javaScript/classes/clouds.class.js"></script>
+    <script src="javaScript/classes/character.class.js"></script>
+    <script src="javaScript/classes/chicken.class.js"></script>
+    <script src="javaScript/classes/smallChicken.class.js"></script>
+    <script src="javaScript/classes/bottlebar.class.js"></script>
+    <script src="javaScript/classes/healthBar.class.js"></script>
+    <script src="javaScript/classes/coinBar.class.js"></script>
+    <script src="javaScript/classes/level.class.js"></script>
+    <script src="javaScript/classes/endboss.class.js"></script>
+    <script src="javaScript/classes/coins.class.js"></script>
+    <script src="javaScript/classes/bottle.class.js"></script>
+    <script src="javaScript/classes/throwAbleObjects.class.js"></script>
+    <script src="javaScript/classes/bossHealthBar.class.js"></script>
+
+    <script src="javaScript/levels/level1.js"></script>
+    <script src="javaScript/game.js"></script>
+</head>
+
+<body onload="init()">
+
+    <header>
+        <h1>EL POLLO LOCO</h1>
+    </header>
+
+    <section class="section-canvas">
+        <div class="container" id="fullscreen">
+            <canvas width="720" height="480" id="canvas">
+            </canvas>
+            <menu class="controls_top" id="menu-top">
+                <button class="play-button" onclick="startTheGame()" id="play-button">Play</button>
+                <div class="mute-fullscreen-div">
+                    <button onmousedown="changeImgSrc('volume')"><img src="icons/volume.png" alt="Volume"
+                            id="volume-img"></button>
+                    <button onmousedown="changeImgSrc('screen')" class="screen-button"><img src="icons/fullscreen.png" alt="Fullscreen"
+                            id="fullscreen-img"></button>
+                </div>
+            </menu>
+            <div class="game-over-buttons" id="game-over-buttons">
+                <button onclick="playAgain()">PLay again</button>
+                <button onclick="reloadWebsite()">Go to menu</button>
+            </div>
+            <menu class="controls_bottom" id="menu-bottom">
+                <div class="control_panel_left">
+                    <button id="btn-left-mobile"><img src="icons/arrow-left.png" alt="Arrow left"></button>
+                    <button id="btn-right-mobile"><img src="icons/arrow-right.png" alt="Arrow rigth"></button>
+                </div>
+                <div class="control_panel_right">
+                    <button id="btn-jump-mobile"><img src="icons/up-arrow.png" alt="Arrow up"></button>
+                    <button id="btn-throw-mobile"><img src="icons/curve-arrow.png" alt="Arrow curve"></button>
+                </div>
+            </menu>
+        </div>
+    </section>
+
+    <section>
+        <div class="description">
+            <h2>ARROW LEFT/RIGHT = WALK</h2>
+            <h2>SPACE = JUMP</h2>
+            <h2>T = THROW BOTTLE</h2>
+        </div>
+    </section>
+
+    <footer>
+        <a href="legal-notice.html">Legal Notice</a>
+        <div class="placeholder"></div>
+        <a href="privacy-policy.html">Privacy policy</a>
+    </footer>
+
+    <div class="phone-message">
+        <h3>Pleaser rotate your phone or tablet to play!</h3>
+        <img src="icons/phone-rotate.png" alt="">
+    </div>
+</body>
+
+</html>
