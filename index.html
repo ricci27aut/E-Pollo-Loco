@@ -33,7 +33,7 @@
     <script src="javaScript/game.js"></script>
 </head>
 
-<body onload="init()">
+<body onload="init(); loadRightIcon()">
 
     <header>
         <h1>EL POLLO LOCO</h1>
@@ -41,7 +41,7 @@
 
     <section class="section-canvas">
         <div class="container" id="fullscreen">
-            <canvas width="720" height="480" id="canvas">
+            <canvas width="720" height="480" id="canvas" class="canvasSize">
             </canvas>
             <menu class="controls_top" id="menu-top">
                 <button class="play-button" onclick="startTheGame()" id="play-button">Play</button>
@@ -53,10 +53,10 @@
                 </div>
             </menu>
             <div class="game-over-buttons" id="game-over-buttons">
-                <button onclick="playAgain()">PLay again</button>
+                <button onclick="restartGame()">PLay again</button>
                 <button onclick="reloadWebsite()">Go to menu</button>
             </div>
-            <menu class="controls_bottom" id="menu-bottom">
+            <menu class="controls_bottom none" id="menu-bottom">
                 <div class="control_panel_left">
                     <button id="btn-left-mobile"><img src="icons/arrow-left.png" alt="Arrow left"></button>
                     <button id="btn-right-mobile"><img src="icons/arrow-right.png" alt="Arrow rigth"></button>

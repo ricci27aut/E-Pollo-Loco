@@ -41,6 +41,7 @@ class Endboss extends MovableObject {
         left: 40,
         right: 40
     };
+
     alertSound = new Audio('audio/chicken-boss-alert.mp3')
     height = 350;
     width = 300;
@@ -66,7 +67,9 @@ class Endboss extends MovableObject {
         this.animate();
     }
 
-
+/**
+     * play animation for the Endboss
+     */
     animate() {
         setInterval(() => {
             this.intervalForMovement();
@@ -92,23 +95,39 @@ class Endboss extends MovableObject {
     }
 
 
-    endBossWalkLeft() {
-        setTimeout(() => {
-            this.moveLeft();
-            this.otherDirection = false;
-            this.walking = true;
-        }, 200)
-    }
+  /**
+ * Moves the Endboss to the left after a short delay.
+ * 
+ * - Calls `moveLeft()` to start movement.
+ * - Sets `otherDirection` to false (facing left).
+ * - Activates walking animation flag.
+ * 
+ * @returns {void}
+ */
+endBossWalkLeft() {
+    setTimeout(() => {
+        this.moveLeft();
+        this.otherDirection = false;
+        this.walking = true;
+    }, 200)
+}
 
-
-    endBossWalkRight() {
-        setTimeout(() => {
-            this.moveRight();
-            this.otherDirection = true;
-            this.walking = true;
-        }, 100)
-    }
-
+/**
+ * Moves the Endboss to the right after a short delay.
+ * 
+ * - Calls `moveRight()` to start movement.
+ * - Sets `otherDirection` to true (facing right).
+ * - Activates walking animation flag.
+ * 
+ * @returns {void}
+ */
+endBossWalkRight() {
+    setTimeout(() => {
+        this.moveRight();
+        this.otherDirection = true;
+        this.walking = true;
+    }, 100)
+}
 
     /**
      * Here it checks where the character is, if this is in a certain zone, a function is called that displays images of the enboss.
@@ -144,7 +163,7 @@ class Endboss extends MovableObject {
 
 
     /**
-     * Falls der Endboss verletzt wird, werden bestimmte Bilder angezeigt.
+     * when the endboss gets hurt, the hurt images are displayed for a short time.
      */
     endBossGetHurt() {
         this.playAnimation(this.IMAGES_HURT);
@@ -154,6 +173,9 @@ class Endboss extends MovableObject {
     }
 
 
+    /**
+     * When the endboss is dead, the game is over and certain images are displayed.
+     */
     gameIsOver() {
         setTimeout(() => {
             endGame = true;

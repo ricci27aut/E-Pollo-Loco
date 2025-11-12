@@ -1,5 +1,4 @@
 class MovableObject extends DrawableObejects {
-    // ALLES HIER IST NUR EINE VORLAGE FÜR DIE ANDEREN CLASSEN. DIES ALLES IST AUCH IN DEN ANDEREN CLASSEN.
     speed = 0.15;
     otherDirection = false;
     speedY = 0;
@@ -68,7 +67,9 @@ class MovableObject extends DrawableObejects {
         this.checkJumpImageCharacter(path);
     }
 
-
+/**
+     * Here the pictures are gone through for the animation of a chicken.
+     */
     playAnimationJumpChicken(images) {
         this.currentImageJump = this.currentImageJump % images.length;
         let path = images[this.currentImageJump]; 
@@ -133,19 +134,25 @@ class MovableObject extends DrawableObejects {
         }
     }
 
-
+/**
+     * check if NPC got a hit
+     */
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;
         timepassed = timepassed / 1000;
         return timepassed < 0.5;
     }
 
-
+/**
+     * check if NPC is dead
+     */
     isDead() {
         return this.energy == 0;
     }
 
-
+ /**
+     * check if NPC got a coin
+     */
     hitCoin() {
         this.coinEnergy += 20;
         if (this.coinEnergy > 100) {

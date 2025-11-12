@@ -6,40 +6,55 @@ let canvas;
 let world;
 let muteSounds;
 let test = false;
+let gameOverInterval = null;
+let VolumeData = JSON.parse(localStorage.getItem('volumeState')) || { mute: false };
 
 
+/**
+ * Initialize the app:
+ * - Grabs the canvas
+ * - Restores the correct sound icon
+ * - Draws only the start screen (no World yet)
+ */
 function init() {
     canvas = document.getElementById('canvas');
-    if (startGame) {
-        this.initLevel();
-    } else {
-        startScreen.draw(canvas.getContext('2d'));
-    }
-    world = new World(canvas, keyboard);
-    mobileBtn();
-    checkIfGameIsOver();    
+    loadRightIcon();
+
+    // Only draw the start screen here — DO NOT create World here!
+    startScreen.draw(canvas.getContext('2d'));
 }
 
-
+/**
+ * Starts (or restarts) a short interval that toggles the visibility of the
+ * "game over" buttons based on the global `endGame` flag.
+ * Ensures old intervals are cleared before creating a new one.
+ */
 function checkIfGameIsOver() {
-    setInterval(() => {
-        if (endGame) {
-            document.getElementById('game-over-buttons').style.display = 'flex';
-        } else {
-            document.getElementById('game-over-buttons').style.display = 'none';
-        }
-    }, 100)
+  if (gameOverInterval) {
+    clearInterval(gameOverInterval);
+    gameOverInterval = null;}
+  gameOverInterval = setInterval(() => {
+    const btns = document.getElementById('game-over-buttons');
+    if (endGame) {
+      btns.classList.remove('none');      // newly added CSS class toggle
+      btns.style.display = 'flex';
+    } else {
+      btns.style.display = 'none';
+    }}, 100);
 }
 
-
+/**
+ * Reloads the current page (hard refresh navigation).
+ */
 function reloadWebsite() {
     window.location.href = window.location.href;
 }
 
-
 /**
- * Change the image of sound and full screen when we click on this.
- * @param {string} src - get the string from which button it was called (volume / fullscreen)
+ * Handles UI icon toggles for volume and fullscreen controls and triggers
+ * the corresponding effects (mute/unmute, enter/exit fullscreen).
+ *
+ * @param {string} src - Which control triggered the change ('volume' | 'screen').
  */
 function changeImgSrc(src) {
     let fullscreen = document.getElementById('fullscreen');
@@ -52,56 +67,54 @@ function changeImgSrc(src) {
     changeImgFullscreenAndGoToFullscreen(src, fullscreen, fullscreenBTN, menuTop, menuBottom, playAgainDiv);
 }
 
-
 /**
- * 
- * @param {string} src - get the string from which button it was called (volume / fullscreen).
- * @param {object} volumeBTN - id from volume img.
+ * Toggles the volume icon and updates global mute state + persistence.
+ *
+ * @param {string} src - Which control triggered the change ('volume' | 'screen').
+ * @param {HTMLImageElement} volumeBTN - The <img> element showing the volume icon.
  */
 function changeImgVolumeAndMute(src, volumeBTN) {
     if (src == 'volume') {
         if (volumeBTN.getAttribute('src') == 'icons/mute.png') {
             muteSounds = false;
             volumeBTN.setAttribute('src', 'icons/volume.png');
+            saveToLocalStorage(false);
         } else if (volumeBTN.getAttribute('src') == 'icons/volume.png') {
             volumeBTN.setAttribute('src', 'icons/mute.png');
             muteSounds = true;
+            saveToLocalStorage(true);
         }
+        
     };
 }
 
-
 /**
- * 
- * @param {string} src - get the string from which button it was called (volume / fullscreen)
- * @param {object} fullscreen - ID of entire fullscreen div.
- * @param {object} fullscreenBTN - ID of fullscreen img.
- * @param {object} menuTop - ID from menu bar at the top.
- * @param {object} menuBottom - ID of menu bar at the bottom.
- * @param {object} playAgainDiv - ID of Play Again Div.
+ * Toggles fullscreen mode and synchronizes related UI widths and icons.
+ *
+ * @param {string} src - Which control triggered the change ('volume' | 'screen').
+ * @param {HTMLElement} fullscreen - The container element to request fullscreen on.
+ * @param {HTMLImageElement} fullscreenBTN - The <img> showing fullscreen/smallscreen icon.
+ * @param {HTMLElement} menuTop - The top menu bar element.
+ * @param {HTMLElement} menuBottom - The bottom menu bar element.
+ * @param {HTMLElement} playAgainDiv - The "Play Again" button container.
  */
 function changeImgFullscreenAndGoToFullscreen(src, fullscreen, fullscreenBTN, menuTop, menuBottom, playAgainDiv) {
     if (src == 'screen') {
         if (fullscreenBTN.getAttribute('src') == 'icons/fullscreen.png') {
             fullscreenBTN.setAttribute('src', 'icons/smallscreen.png');
-            menuTop.style.width = '100vw';
-            menuBottom.style.width = '100vw';
-            playAgainDiv.style.width = '100vw';
+            menuTop.style.width = '100vw'; menuBottom.style.width = '100vw'; playAgainDiv.style.width = '100vw';
             goFullScreen(fullscreen);
         } else if (fullscreenBTN.getAttribute('src') == 'icons/smallscreen.png') {
             fullscreenBTN.setAttribute('src', 'icons/fullscreen.png');
-            menuTop.style.width = '720px';
-            menuBottom.style.width = '720px';
-            playAgainDiv.style.width = '720px';
-            closeFullscreen(fullscreen);
-        }
+            menuTop.style.width = '720px';menuBottom.style.width = '720px'; playAgainDiv.style.width = '720px';
+            closeFullscreen(fullscreen);}
     };
 }
 
-
 /**
- * 
- * @param {object} fullscreen - ID of entire fullscreen div.
+ * Requests browser fullscreen on the provided container and expands the canvas to viewport size.
+ *
+ * @param {HTMLElement} fullscreen - The container element to request fullscreen on.
  */
 function goFullScreen(fullscreen) {
     if (fullscreen.requestFullscreen) {
@@ -115,7 +128,9 @@ function goFullScreen(fullscreen) {
     canvas.style.height = '100vh';
 }
 
-
+/**
+ * Exits browser fullscreen (if active) and restores canvas to default size.
+ */
 function closeFullscreen() {
     if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -128,14 +143,23 @@ function closeFullscreen() {
     canvas.style.height = '480px';
 }
 
-
+/**
+ * Starts a new game session:
+ * - Sets `startGame` true
+ * - Initializes level + world
+ * - Hides the play button
+ * - Shows mobile controls
+ */
 function startTheGame() {
     startGame = true;
-    init();
+    startGameWorld();
     document.getElementById('play-button').style.display = 'none';
+    toggleNoneMobileButton();
 }
 
-
+/**
+ * Attaches touch handlers for all mobile controls.
+ */
 function mobileBtn() {
     mobileButtonLeft();
     mobileButtonRight();
@@ -143,7 +167,9 @@ function mobileBtn() {
     mobileButtonThrow();
 }
 
-
+/**
+ * Registers touch handlers for moving left on mobile.
+ */
 function mobileButtonLeft() {
     document.getElementById('btn-left-mobile').addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -155,7 +181,9 @@ function mobileButtonLeft() {
     });
 }
 
-
+/**
+ * Registers touch handlers for moving right on mobile.
+ */
 function mobileButtonRight() {
     document.getElementById('btn-right-mobile').addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -167,7 +195,9 @@ function mobileButtonRight() {
     });
 }
 
-
+/**
+ * Registers touch handlers for jumping on mobile.
+ */
 function mobileButtonJump() {
     document.getElementById('btn-jump-mobile').addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -179,7 +209,9 @@ function mobileButtonJump() {
     });
 }
 
-
+/**
+ * Registers touch handlers for throwing on mobile.
+ */
 function mobileButtonThrow() {
     document.getElementById('btn-throw-mobile').addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -191,73 +223,140 @@ function mobileButtonThrow() {
     });
 }
 
+/**
+ * Fully resets the game back to the start screen:
+ * - Clears intervals and animation frames
+ * - Resets flags
+ * - Clears canvas and UI
+ * - Redraws the start screen
+ */
+function restartGame() {
+    // a) Stop game-over polling interval
+    if (gameOverInterval) {
+        clearInterval(gameOverInterval);
+        gameOverInterval = null;
+    }
 
-function playAgain() {
-    for (let i = 1; i < 9999; i++) window.clearInterval(i);
+    // b) Stop the render loop (World.requestAnimationFrame)
+    if (world && world._rafId) {
+        cancelAnimationFrame(world._rafId);
+        world._rafId = null;
+    }
+
+    // c) Safety: clear any stray setInterval from entities/screens
+    for (let i = 1; i < 99999; i++) clearInterval(i);
+
+    // d) Reset global state
     endGame = false;
-    startGame = true;
-    muteSounds = false;
+    startGame = false; // back to start screen
+
+    // e) Clean canvas & UI
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.getElementById('game-over-buttons').classList.add('none');
+    document.getElementById('play-button').style.removeProperty('display');
+
+    // f) Draw the start screen — new game starts only via "Play"
     init();
-    document.getElementById('game-over-buttons').style.display = 'none';
 }
 
+/**
+ * Shows the bottom mobile menu by removing the `none` class.
+ */
+function toggleNoneMobileButton() {
+    document.getElementById('menu-bottom').classList.remove('none')
+   
+}
 
 /**
- * This is called when a key is pressed.
+ * Keyboard handlers: sets pressed directional/action keys on keydown.
+ * Uses legacy keyCode mapping for compatibility with existing code.
  */
 window.addEventListener('keydown', (e) => {
     if (e.keyCode == 39) {
-        keyboard.RIGHT = true;
-    }
-
+        keyboard.RIGHT = true;}
     if (e.keyCode == 37) {
-        keyboard.LEFT = true;
-    }
-
+        keyboard.LEFT = true;}
     if (e.keyCode == 38) {
-        keyboard.UP = true;
-    }
-
+        keyboard.UP = true;}
     if (e.keyCode == 40) {
-        keyboard.DOWN = true;
-    }
-
+        keyboard.DOWN = true;}
     if (e.keyCode == 32) {
-        keyboard.SPACE = true;
-    }
-
+        keyboard.SPACE = true;}
     if (e.keyCode == 84) {
-        keyboard.T = true;
-    }
+        keyboard.T = true;}
 });
 
-
 /**
- * This is called when a key is released.
+ * Keyboard handlers: unsets directional/action keys on keyup.
+ * Uses legacy keyCode mapping for compatibility with existing code.
  */
 window.addEventListener('keyup', (e) => {
     if (e.keyCode == 39) {
-        keyboard.RIGHT = false;
-    }
-
+        keyboard.RIGHT = false;}
     if (e.keyCode == 37) {
-        keyboard.LEFT = false;
-    }
-
+        keyboard.LEFT = false;}
     if (e.keyCode == 38) {
-        keyboard.UP = false;
-    }
-
+        keyboard.UP = false;}
     if (e.keyCode == 40) {
-        keyboard.DOWN = false;
-    }
-
+        keyboard.DOWN = false;}
     if (e.keyCode == 32) {
-        keyboard.SPACE = false;
-    }
-
+        keyboard.SPACE = false;}
     if (e.keyCode == 84) {
-        keyboard.T = false;
-    }
-
+        keyboard.T = false;}
 });
+
+/**
+ * Syncs UI when exiting fullscreen via ESC or browser UI.
+ * Restores canvas and top menu width when no element is in fullscreen.
+ */
+document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+       canvas.style.width = '720px';
+    canvas.style.height = '480px';
+    document.getElementById('menu-top').style.width = '720px';
+    }
+});
+
+/**
+ * Persists the mute state to localStorage.
+ *
+ * @param {boolean} isMuted - Whether the app should be muted.
+ */
+function saveToLocalStorage(isMuted) {
+    VolumeData = { mute: isMuted };
+    localStorage.setItem('volumeState', JSON.stringify(VolumeData));
+}
+
+/**
+ * Restores the correct volume icon and sets `muteSounds` from localStorage.
+ * If no saved state exists, defaults to unmuted.
+ */
+function loadRightIcon() {
+    const volumeBTN = document.getElementById('volume-img');
+    const savedData = JSON.parse(localStorage.getItem('volumeState'));
+
+    if (savedData && savedData.mute) {
+        muteSounds = true;
+        volumeBTN.setAttribute('src', 'icons/mute.png');
+    } else {
+        muteSounds = false;
+        volumeBTN.setAttribute('src', 'icons/volume.png');
+    }
+}
+
+/**
+ * Bootstraps a running World/game session:
+ * - Initializes level data
+ * - Creates the World instance
+ * - Binds mobile controls
+ * - Starts the game-over watcher
+ */
+function startGameWorld() {
+    this.initLevel();
+
+    world = new World(canvas, keyboard);
+
+    mobileBtn();
+    checkIfGameIsOver();
+}

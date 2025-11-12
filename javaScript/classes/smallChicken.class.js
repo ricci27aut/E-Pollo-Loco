@@ -29,6 +29,9 @@ class SmallChicken extends MovableObject {
     }
 
 
+   /**
+ * Starts the chicken animation and movement:
+ */
     animate() {
         setInterval(() => {
             this.intervalForMovement();
@@ -51,6 +54,9 @@ class SmallChicken extends MovableObject {
     }
 
     
+    /**
+     * check is Chicken Dead
+     */
     ifChickenIsDead() {
         if (this.chickenEnergy == 0) {
             this.loadImage('img/3_enemies_chicken/chicken_small/2_dead/dead.png');

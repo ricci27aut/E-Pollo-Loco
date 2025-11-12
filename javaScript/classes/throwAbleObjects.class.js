@@ -37,44 +37,63 @@ class ThrowAbleObjects extends MovableObject {
     }
 
 
-    animate() {
-        this.speedY = 15;
-        this.intervalForMovement();
-        setInterval(() => {
-            this.intervalForImages();  
-        }, 1000 / 15)
-    }
+   /**
+ * Starts the bottle animation and movement:
+ * - Initializes the vertical speed (gravity effect)
+ * - Starts continuous horizontal movement depending on character direction
+ * - Periodically updates the animation frames
+ * 
+ * @returns {void}
+ */
+animate() {
+    this.speedY = 15;
+    this.intervalForMovement();
+    setInterval(() => {
+        this.intervalForImages();  
+    }, 1000 / 15)
+}
 
-
-    /**
-     * If a bottle is created, it should be turned in a certain direction.
-     */
-    intervalForMovement() {
-        if (!this.bottleIsColliding) {
-            if (world.character.looksRight) {
-                setInterval(() => {
-                    this.x += this.speed * 50
-                }, 1000 / 60)
-            } else if (world.character.looksLeft) {
-                setInterval(() => {
-                    this.x -= this.speed * 50
-                }, 1000 / 60)
-            }
+/**
+ * Controls the bottle’s horizontal movement direction after being thrown.
+ * 
+ * - If the character is facing right → moves bottle to the right.
+ * - If facing left → moves bottle to the left.
+ * - Movement stops once the bottle collides.
+ * 
+ * Uses a frame rate of 60 FPS for smoother motion.
+ * 
+ * @returns {void}
+ */
+intervalForMovement() {
+    if (!this.bottleIsColliding) {
+        if (world.character.looksRight) {
+            setInterval(() => {
+                this.x += this.speed * 50
+            }, 1000 / 60)
+        } else if (world.character.looksLeft) {
+            setInterval(() => {
+                this.x -= this.speed * 50
+            }, 1000 / 60)
         }
     }
+}
 
-
-    /**
-     * For the pictures if a bottle is created.
-     */
-    intervalForImages() {
-        if (this.bottleIsColliding && this.bottleImageCount == 0) {
-            this.playAnimation(this.IMAGES_BOTTLE_SPLASH);
-            setTimeout(() => {
-                this.bottleImageCount++;
-            }, 200)
-        } else {
-            this.playAnimation(this.IMAGES_THROW_BOTTLE);
-        }
+/**
+ * Controls which sprite images to show depending on the bottle state:
+ * 
+ * - While flying: plays the throw animation.
+ * - On first collision: plays the splash animation once.
+ * 
+ * @returns {void}
+ */
+intervalForImages() {
+    if (this.bottleIsColliding && this.bottleImageCount == 0) {
+        this.playAnimation(this.IMAGES_BOTTLE_SPLASH);
+        setTimeout(() => {
+            this.bottleImageCount++;
+        }, 200)
+    } else {
+        this.playAnimation(this.IMAGES_THROW_BOTTLE);
     }
+}
 }

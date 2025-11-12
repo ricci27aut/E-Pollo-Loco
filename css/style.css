@@ -32,6 +32,8 @@ canvas {
     box-shadow: 0px 0px 109px 43px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
 }
+ 
+
 
 .description {
     text-align: center;
@@ -189,6 +191,10 @@ footer a:hover {
     width: 3px;
     border-radius: 30%;
     height: 40px; 
+}
+
+.none{
+    display: none !important;
 }
 
 @media only screen and (max-width: 720px) {

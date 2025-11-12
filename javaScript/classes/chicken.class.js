@@ -30,6 +30,9 @@ class Chicken extends MovableObject {
     }
 
 
+    /**
+     * When the chicken gets hurt, certain images are displayed.
+     */
     animate() {
         this.intervalChicken = setInterval(() => {
             this.intervalForMovement();

@@ -1,4 +1,5 @@
 class Character extends MovableObject {
+
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
         'img/2_character_pepe/2_walk/W-22.png',
@@ -7,6 +8,7 @@ class Character extends MovableObject {
         'img/2_character_pepe/2_walk/W-25.png',
         'img/2_character_pepe/2_walk/W-26.png',
     ];
+
     IMAGES_JUMPING = [
         'img/2_character_pepe/3_jump/J-31.png',
         'img/2_character_pepe/3_jump/J-32.png',
@@ -29,6 +31,7 @@ class Character extends MovableObject {
         'img/2_character_pepe/3_jump/J-38.png',
         'img/2_character_pepe/3_jump/J-39.png',
     ];
+
     IMAGES_DEAD = [
         'img/2_character_pepe/5_dead/D-51.png',
         'img/2_character_pepe/5_dead/D-52.png',
@@ -38,11 +41,13 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-56.png',
         'img/2_character_pepe/5_dead/D-57.png',
     ];
+
     IMAGES_HIT = [
         'img/2_character_pepe/4_hurt/H-41.png',
         'img/2_character_pepe/4_hurt/H-42.png',
         'img/2_character_pepe/4_hurt/H-43.png',
     ];
+
     IMAGES_IDLE = [
         'img/2_character_pepe/1_idle/idle/I-1.png',
         'img/2_character_pepe/1_idle/idle/I-2.png',
@@ -55,6 +60,7 @@ class Character extends MovableObject {
         'img/2_character_pepe/1_idle/idle/I-9.png',
         'img/2_character_pepe/1_idle/idle/I-10.png',
     ];
+
     IMAGES_LONG_IDLE = [
         'img/2_character_pepe/1_idle/long_idle/I-11.png',
         'img/2_character_pepe/1_idle/long_idle/I-12.png',
@@ -67,34 +73,39 @@ class Character extends MovableObject {
         'img/2_character_pepe/1_idle/long_idle/I-19.png',
         'img/2_character_pepe/1_idle/long_idle/I-20.png',
     ];
-    offset = {
-        top: 110,
-        bottom: 0,
-        left: 40,
-        right: 50
-    };
+
+    offset = { top: 110, bottom: 0, left: 40, right: 50 };
+
     walking_sound = new Audio('audio/walking.mp3');
     jumping_sound = new Audio('audio/jumping.mp3');
-    idle_sound = new Audio('audio/snoring.mp3');
-    hurt_sound = new Audio('audio/character-hurt.mp3');
+    idle_sound    = new Audio('audio/snoring.mp3');
+    hurt_sound    = new Audio('audio/character-hurt.mp3');
+
     height = 260;
-    width = 160;
-    y = 170;
-    speed = 5;
-    bottleEnergy = 0;
-    bottleCollected = 0;
+    width  = 160;
+    y      = 170;
+    speed  = 5;
+
+    bottleEnergy     = 0;
+    bottleCollected  = 0;
+
     jumpIntervalId = 0;
+    jumpInterval   = null;
+
     intervalTime = 0;
-    idleTime = 0;
-    SPACE = false;
-    jumping = false;
-    longIdle = false;
+    idleTime     = 0;
+
+    SPACE     = false;
+    jumping   = false;
+    longIdle  = false;
+
     world;
     looksRight;
     looksLeft;
-    jumpInterval;
 
-
+    /**
+     * Initializes the character, loads all animation sprites, and starts gravity + animations.
+     */
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.IMAGES_JUMPING);
@@ -107,23 +118,24 @@ class Character extends MovableObject {
         this.applyGravitiy();
     }
 
-
+    /**
+     * Starts periodic update loops:
+     * - 60 FPS for movement and input
+     * - 130 ms for image selection (animations)
+     */
     animate() {
         setInterval(() => {
             this.intervalForMovement();
-        }, 1000 / 60)
+        }, 1000 / 60);
 
         setInterval(() => {
             this.intervalForImages();
-            if (this.world.keyboard.SPACE && !this.inAir) {
-                this.inAir = true;
-            }
+            // No SPACE trigger here → avoids double jump
         }, 130);
     }
 
-
     /**
-     * Hier werden für die Bilder die animation aufgerufen.
+     * Chooses which animation to display depending on the current state.
      */
     intervalForImages() {
         if (this.isDead()) {
@@ -134,24 +146,23 @@ class Character extends MovableObject {
             this.jumpAnimation();
         } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.walkAnimation();
-        } else if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) {
+        } else {
             this.idleAnimation();
-        };
+        }
     }
 
-
+    /**
+     * Handles death animation and marks the game as ended.
+     */
     gameIsOver() {
-        setTimeout(() => {
-            endGame = true;
-        }, 500)
+        setTimeout(() => { endGame = true; }, 500);
         this.playAnimation(this.IMAGES_DEAD);
         this.idle_sound.pause();
         this.resetLongIdle();
     }
 
-
     /**
-     * Wenn der Character verletzt wird. (Bilder)
+     * Plays the hurt animation and sound when the character takes damage.
      */
     hurtAnimation() {
         this.playAnimation(this.IMAGES_HIT);
@@ -163,36 +174,33 @@ class Character extends MovableObject {
         }
     }
 
-
     /**
-     * Für das Springen zuständig. (Bilder)
+     * Starts the jump animation loop once per jump.
+     * Plays the first jump frame immediately for a smooth response.
      */
     jumpAnimation() {
         if (this.jumpIntervalId == 0) {
+            this.playAnimationJump(this.IMAGES_JUMPING);
             this.jumpInterval = setInterval(() => {
                 this.playAnimationJump(this.IMAGES_JUMPING);
-            }, 100)
+            }, 200);
             this.jumpIntervalId++;
         }
-        this.idle_sound.pause()
+        this.idle_sound.pause();
     }
 
-
     /**
-     * Geh animation. (Bilder)
-     * Hier wird geprüft ob der Character am Boden ist. 
+     * Plays walking animation only if the character is on the ground.
      */
     walkAnimation() {
         if (!this.inAir && this.y > 167) {
-            this.idle_sound.pause()
+            this.idle_sound.pause();
             this.playAnimation(this.IMAGES_WALKING);
         }
     }
 
-
     /**
-     * Falls der character langeweile hat werden hier weider Functionen aufgerufen.
-     * Hier wird ein Zietpunkt erstellt ab welcher sekunder der Character langeweile hat.
+     * Starts or continues idle animation depending on how long the player is idle.
      */
     idleAnimation() {
         if (this.intervalTime == 0) {
@@ -202,9 +210,8 @@ class Character extends MovableObject {
         this.characterIsIdle();
     }
 
-
     /**
-     * Hier wird unterschieden ob der Character erst vor kurzem langeweile hat oder schon länger.
+     * Chooses between normal idle and long idle animations (snoring).
      */
     characterIsIdle() {
         if (!this.longIdle) {
@@ -222,22 +229,29 @@ class Character extends MovableObject {
         }
     }
 
-
     /**
-     * 
-     * @returns vergange zeit zwischen zwei Zeiten wenn diese über 5 sek. ist.
+     * Checks if the character has been idle for more than 5 seconds.
+     * @returns {boolean} True if idle time exceeds 5 seconds.
      */
     checkIdleTime() {
         let timepassed = new Date().getTime() - this.idleTime;
         timepassed = timepassed / 1000;
-        return timepassed > 5
+        return timepassed > 5;
     }
 
-
     /**
-     * Hier wird alles ausgeführt was der Character tun sollte. (Laufen, Springen)
+     * Handles all movement logic per frame:
+     * - Detects jump trigger
+     * - Moves character left/right
+     * - Updates camera position
      */
     intervalForMovement() {
+        // Single jump trigger (prevents double jump)
+        if (this.world.keyboard.SPACE && !this.inAir && !this.isAboveGround() && !this.jumping) {
+            this.jumping = true;
+            this.inAir   = true;
+        }
+
         this.walking_sound.pause();
         this.characterMovesRight();
         this.characterMovesLeft();
@@ -245,10 +259,8 @@ class Character extends MovableObject {
         this.world.camera_x = -this.x + 50;
     }
 
-
     /**
-     * Character sollte sich nach Rechts bewegen.
-     * Hier wird auch eine Variable vergeben wenn der character nach Rechts läuft dann werden durch die Variable die Flaschen auch nach Rechts geworfen.
+     * Moves the character to the right if within map boundaries.
      */
     characterMovesRight() {
         if (this.world.keyboard.RIGHT && this.x < 2156) {
@@ -257,16 +269,14 @@ class Character extends MovableObject {
             }
             this.moveRight();
             this.otherDirection = false;
-            this.looksLeft = false;
+            this.looksLeft  = false;
             this.looksRight = true;
             this.resetLongIdle();
         }
     }
 
-
     /**
-     * Character should move to the left.
-     * Here a variable is also assigned, if the character runs to the left, then the variable also throws the bottles to the left.
+     * Moves the character to the left if within map boundaries.
      */
     characterMovesLeft() {
         if (this.world.keyboard.LEFT && this.x > -1330) {
@@ -276,33 +286,47 @@ class Character extends MovableObject {
             this.moveLeft();
             this.resetLongIdle();
             this.otherDirection = true;
-            this.looksLeft = true;
+            this.looksLeft  = true;
             this.looksRight = false;
         }
     }
 
+ /**
+ * Executes the jump action and delegates post-jump cleanup.
+ */
+characterJumps() {
+    if (this.jumping && !this.isAboveGround()) {
+        this.jump();
 
-    /**
-     * Character should jump.
-     * Checked if the character is on the ground.
-     */
-    characterJumps() {
-        if (this.jumping && !this.isAboveGround()) {
-            this.jump();
-            setTimeout(() => {
-                this.jumping = false;
-            }, 500)
-            this.resetLongIdle();
-            if (!muteSounds) {
-                this.jumping_sound.currentTime = 0;
-                this.jumping_sound.play();
-            }
+        // Schedule cleanup and reset after jump
+        setTimeout(() => {
+            this.finishJump();
+        }, 500);
+
+        this.resetLongIdle();
+
+        if (!muteSounds) {
+            this.jumping_sound.currentTime = 0;
+            this.jumping_sound.play();
         }
     }
+}
 
+/**
+ * Resets all jump-related flags and intervals after the jump ends.
+ */
+finishJump() {
+    this.jumping = false;
+    if (this.jumpInterval) {
+        clearInterval(this.jumpInterval);
+        this.jumpInterval = null;
+    }
+    this.jumpIntervalId = 0;
+    this.inAir = false;
+}
 
     /**
-     * If the character has picked up a bottle.
+     * Updates bottle-related stats when a bottle is collected.
      */
     collectBottle() {
         this.bottleEnergy += 20;
@@ -312,9 +336,8 @@ class Character extends MovableObject {
         }
     }
 
-
     /**
-     * Resets the timer where the character got bored.
+     * Resets idle timers and flags (used whenever the player performs an action).
      */
     resetLongIdle() {
         this.intervalTime = 0;
