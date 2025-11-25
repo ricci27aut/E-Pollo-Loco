@@ -1,4 +1,5 @@
 class EndScreen extends DrawableObejects {
+    
     constructor(img) {
         super();
         setInterval(() => {

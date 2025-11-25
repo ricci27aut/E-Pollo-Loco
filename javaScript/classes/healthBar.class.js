@@ -1,4 +1,5 @@
 class HealthBar extends DrawableObejects {
+    
     IMAGES_HEALTH_BAR = [
         'img/7_statusbars/1_statusbar/2_statusbar_health/orange/0.png',
         'img/7_statusbars/1_statusbar/2_statusbar_health/orange/20.png',
@@ -7,6 +8,7 @@ class HealthBar extends DrawableObejects {
         'img/7_statusbars/1_statusbar/2_statusbar_health/orange/80.png',
         'img/7_statusbars/1_statusbar/2_statusbar_health/orange/100.png',
     ];
+
     healthPercentage = 100;
 
     constructor() {

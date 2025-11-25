@@ -1,18 +1,22 @@
 class SmallChicken extends MovableObject {
+    
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
         'img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
         'img/3_enemies_chicken/chicken_small/1_walk/3_w.png',
     ];
+
     IMAGES_DEAD = [
         'img/3_enemies_chicken/chicken_small/2_dead/dead.png',
     ];
+
     offset = {
         top: 10,
         bottom: 0,
         left: 0,
         right: 0
     };
+
     height = 60;
     width = 60;
     y = 370;
@@ -29,9 +33,9 @@ class SmallChicken extends MovableObject {
     }
 
 
-   /**
- * Starts the chicken animation and movement:
- */
+    /**
+  * Starts the chicken animation and movement:
+  */
     animate() {
         setInterval(() => {
             this.intervalForMovement();
@@ -53,7 +57,7 @@ class SmallChicken extends MovableObject {
         }
     }
 
-    
+
     /**
      * check is Chicken Dead
      */
@@ -68,7 +72,7 @@ class SmallChicken extends MovableObject {
      * For the images that are displayed.
      */
     intervalForImages() {
-        if (this.speed > 1.4 && this.chickenEnergy == 1){
+        if (this.speed > 1.4 && this.chickenEnergy == 1) {
             setInterval(() => {
                 this.playAnimation(this.IMAGES_WALKING);
             }, 100);

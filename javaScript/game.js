@@ -19,8 +19,6 @@ let VolumeData = JSON.parse(localStorage.getItem('volumeState')) || { mute: fals
 function init() {
     canvas = document.getElementById('canvas');
     loadRightIcon();
-
-    // Only draw the start screen here — DO NOT create World here!
     startScreen.draw(canvas.getContext('2d'));
 }
 
@@ -30,24 +28,19 @@ function init() {
  * Ensures old intervals are cleared before creating a new one.
  */
 function checkIfGameIsOver() {
-  if (gameOverInterval) {
-    clearInterval(gameOverInterval);
-    gameOverInterval = null;}
-  gameOverInterval = setInterval(() => {
-    const btns = document.getElementById('game-over-buttons');
-    if (endGame) {
-      btns.classList.remove('none');      // newly added CSS class toggle
-      btns.style.display = 'flex';
-    } else {
-      btns.style.display = 'none';
-    }}, 100);
-}
-
-/**
- * Reloads the current page (hard refresh navigation).
- */
-function reloadWebsite() {
-    window.location.href = window.location.href;
+    if (gameOverInterval) {
+        clearInterval(gameOverInterval);
+        gameOverInterval = null;
+    }
+    gameOverInterval = setInterval(() => {
+        const btns = document.getElementById('game-over-buttons');
+        if (endGame) {
+            btns.classList.remove('none');
+            btns.style.display = 'flex';
+        } else {
+            btns.style.display = 'none';
+        }
+    }, 100);
 }
 
 /**
@@ -84,7 +77,6 @@ function changeImgVolumeAndMute(src, volumeBTN) {
             muteSounds = true;
             saveToLocalStorage(true);
         }
-        
     };
 }
 
@@ -106,8 +98,9 @@ function changeImgFullscreenAndGoToFullscreen(src, fullscreen, fullscreenBTN, me
             goFullScreen(fullscreen);
         } else if (fullscreenBTN.getAttribute('src') == 'icons/smallscreen.png') {
             fullscreenBTN.setAttribute('src', 'icons/fullscreen.png');
-            menuTop.style.width = '720px';menuBottom.style.width = '720px'; playAgainDiv.style.width = '720px';
-            closeFullscreen(fullscreen);}
+            menuTop.style.width = '720px'; menuBottom.style.width = '720px'; playAgainDiv.style.width = '720px';
+            closeFullscreen(fullscreen);
+        }
     };
 }
 
@@ -153,7 +146,8 @@ function closeFullscreen() {
 function startTheGame() {
     startGame = true;
     startGameWorld();
-    document.getElementById('play-button').style.display = 'none';
+    document.getElementById('play-button').classList.add('none');
+    document.getElementById('footer').classList.add('none');
     toggleNoneMobileButton();
 }
 
@@ -231,32 +225,27 @@ function mobileButtonThrow() {
  * - Redraws the start screen
  */
 function restartGame() {
-    // a) Stop game-over polling interval
     if (gameOverInterval) {
         clearInterval(gameOverInterval);
         gameOverInterval = null;
     }
 
-    // b) Stop the render loop (World.requestAnimationFrame)
     if (world && world._rafId) {
         cancelAnimationFrame(world._rafId);
         world._rafId = null;
     }
 
-    // c) Safety: clear any stray setInterval from entities/screens
     for (let i = 1; i < 99999; i++) clearInterval(i);
 
-    // d) Reset global state
     endGame = false;
-    startGame = false; // back to start screen
+    startGame = false;
 
-    // e) Clean canvas & UI
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     document.getElementById('game-over-buttons').classList.add('none');
-    document.getElementById('play-button').style.removeProperty('display');
-
-    // f) Draw the start screen — new game starts only via "Play"
+    document.getElementById('play-button').classList.remove('none');
+    document.getElementById('footer').classList.remove('none');
+    document.getElementById('menu-bottom').classList.add('none');
     init();
 }
 
@@ -265,7 +254,7 @@ function restartGame() {
  */
 function toggleNoneMobileButton() {
     document.getElementById('menu-bottom').classList.remove('none')
-   
+
 }
 
 /**
@@ -274,17 +263,23 @@ function toggleNoneMobileButton() {
  */
 window.addEventListener('keydown', (e) => {
     if (e.keyCode == 39) {
-        keyboard.RIGHT = true;}
+        keyboard.RIGHT = true;
+    }
     if (e.keyCode == 37) {
-        keyboard.LEFT = true;}
+        keyboard.LEFT = true;
+    }
     if (e.keyCode == 38) {
-        keyboard.UP = true;}
+        keyboard.UP = true;
+    }
     if (e.keyCode == 40) {
-        keyboard.DOWN = true;}
+        keyboard.DOWN = true;
+    }
     if (e.keyCode == 32) {
-        keyboard.SPACE = true;}
+        keyboard.SPACE = true;
+    }
     if (e.keyCode == 84) {
-        keyboard.T = true;}
+        keyboard.T = true;
+    }
 });
 
 /**
@@ -293,17 +288,23 @@ window.addEventListener('keydown', (e) => {
  */
 window.addEventListener('keyup', (e) => {
     if (e.keyCode == 39) {
-        keyboard.RIGHT = false;}
+        keyboard.RIGHT = false;
+    }
     if (e.keyCode == 37) {
-        keyboard.LEFT = false;}
+        keyboard.LEFT = false;
+    }
     if (e.keyCode == 38) {
-        keyboard.UP = false;}
+        keyboard.UP = false;
+    }
     if (e.keyCode == 40) {
-        keyboard.DOWN = false;}
+        keyboard.DOWN = false;
+    }
     if (e.keyCode == 32) {
-        keyboard.SPACE = false;}
+        keyboard.SPACE = false;
+    }
     if (e.keyCode == 84) {
-        keyboard.T = false;}
+        keyboard.T = false;
+    }
 });
 
 /**
@@ -312,9 +313,9 @@ window.addEventListener('keyup', (e) => {
  */
 document.addEventListener('fullscreenchange', () => {
     if (!document.fullscreenElement) {
-       canvas.style.width = '720px';
-    canvas.style.height = '480px';
-    document.getElementById('menu-top').style.width = '720px';
+        canvas.style.width = '720px';
+        canvas.style.height = '480px';
+        document.getElementById('menu-top').style.width = '720px';
     }
 });
 

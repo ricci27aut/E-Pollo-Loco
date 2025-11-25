@@ -27,17 +27,23 @@ class MovableObject extends DrawableObejects {
         }, 1000 / 25)
     }
 
-
+    /**
+    * checks if the object is above ground
+    */
     isAboveGround() {
         return this.y < 170;
     }
 
-
+    /**
+    * Moves the object to the left.
+    */
     moveLeft() {
         this.x -= this.speed
     }
 
-
+    /**
+    * Moves the object to the right.
+    */
     moveRight() {
         this.x += this.speed;
     }
@@ -61,18 +67,18 @@ class MovableObject extends DrawableObejects {
      */
     playAnimationJump(images) {
         this.currentImageJump = this.currentImageJump % images.length;
-        let path = images[this.currentImageJump]; 
+        let path = images[this.currentImageJump];
         this.img = this.imageCache[path];
         this.currentImageJump++;
         this.checkJumpImageCharacter(path);
     }
 
-/**
-     * Here the pictures are gone through for the animation of a chicken.
-     */
+    /**
+    * Here the pictures are gone through for the animation of a chicken.
+    */
     playAnimationJumpChicken(images) {
         this.currentImageJump = this.currentImageJump % images.length;
-        let path = images[this.currentImageJump]; 
+        let path = images[this.currentImageJump];
         this.img = this.imageCache[path];
         this.currentImageJump++;
         if (path == 'img/2_character_pepe/3_jump/J-39.png') {
@@ -88,14 +94,10 @@ class MovableObject extends DrawableObejects {
      * @param {string} path - String from the pictures.
      */
     checkJumpImageCharacter(path) {
-        if (path == 'img/2_character_pepe/3_jump/J-34.png') {
-            world.character.jumping = true;
-        }
-        if (path == 'img/2_character_pepe/3_jump/J-39.png') {
-            world.character.inAir = false;
-            clearInterval(world.character.jumpInterval);
-            world.character.jumpIntervalId = 0;
-        }
+        const last = 'img/2_character_pepe/3_jump/J-39.png';
+        if (path !== last || !world || !world.character) return;
+
+        world.character.finishJump();
     }
 
 
@@ -125,6 +127,9 @@ class MovableObject extends DrawableObejects {
     }
 
 
+    /**
+    * check if NPC got a hit
+    */
     hit() {
         this.energy -= 5;
         if (this.energy < 0) {
@@ -134,25 +139,25 @@ class MovableObject extends DrawableObejects {
         }
     }
 
-/**
-     * check if NPC got a hit
-     */
+    /**
+    * check if NPC got a hit
+    */
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;
         timepassed = timepassed / 1000;
         return timepassed < 0.5;
     }
 
-/**
-     * check if NPC is dead
-     */
+    /**
+    * check if NPC is dead
+    */
     isDead() {
         return this.energy == 0;
     }
 
- /**
-     * check if NPC got a coin
-     */
+    /**
+    * check if NPC got a coin
+    */
     hitCoin() {
         this.coinEnergy += 20;
         if (this.coinEnergy > 100) {

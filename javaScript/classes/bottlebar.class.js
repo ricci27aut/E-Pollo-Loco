@@ -1,4 +1,5 @@
 class BottleBar extends DrawableObejects {
+    
     IMAGES_BOTTLE_BAR = [
         'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png',
         'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/20.png',
@@ -7,6 +8,7 @@ class BottleBar extends DrawableObejects {
         'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/80.png',
         'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/100.png',
     ];
+
     bottlePersentage = 100;
 
     

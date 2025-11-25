@@ -5,6 +5,7 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/1_walk/G3.png',
         'img/4_enemie_boss_chicken/1_walk/G4.png'
     ];
+
     IMAGES_ALERT = [
         'img/4_enemie_boss_chicken/2_alert/G5.png',
         'img/4_enemie_boss_chicken/2_alert/G6.png',
@@ -15,6 +16,7 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/2_alert/G11.png',
         'img/4_enemie_boss_chicken/2_alert/G12.png',
     ];
+
     IMAGES_ATTACK = [
         'img/4_enemie_boss_chicken/3_attack/G13.png',
         'img/4_enemie_boss_chicken/3_attack/G14.png',
@@ -25,16 +27,19 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/3_attack/G19.png',
         'img/4_enemie_boss_chicken/3_attack/G20.png',
     ];
+
     IMAGES_HURT = [
         'img/4_enemie_boss_chicken/4_hurt/G21.png',
         'img/4_enemie_boss_chicken/4_hurt/G22.png',
         'img/4_enemie_boss_chicken/4_hurt/G23.png',
     ];
+
     IMAGES_DEAD = [
         'img/4_enemie_boss_chicken/5_dead/G24.png',
         'img/4_enemie_boss_chicken/5_dead/G25.png',
         'img/4_enemie_boss_chicken/5_dead/G26.png',
     ];
+
     offset = {
         top: 40,
         bottom: 40,
@@ -67,9 +72,9 @@ class Endboss extends MovableObject {
         this.animate();
     }
 
-/**
-     * play animation for the Endboss
-     */
+    /**
+         * play animation for the Endboss
+         */
     animate() {
         setInterval(() => {
             this.intervalForMovement();
@@ -95,39 +100,39 @@ class Endboss extends MovableObject {
     }
 
 
-  /**
- * Moves the Endboss to the left after a short delay.
- * 
- * - Calls `moveLeft()` to start movement.
- * - Sets `otherDirection` to false (facing left).
- * - Activates walking animation flag.
- * 
- * @returns {void}
- */
-endBossWalkLeft() {
-    setTimeout(() => {
-        this.moveLeft();
-        this.otherDirection = false;
-        this.walking = true;
-    }, 200)
-}
+    /**
+   * Moves the Endboss to the left after a short delay.
+   * 
+   * - Calls `moveLeft()` to start movement.
+   * - Sets `otherDirection` to false (facing left).
+   * - Activates walking animation flag.
+   * 
+   * @returns {void}
+   */
+    endBossWalkLeft() {
+        setTimeout(() => {
+            this.moveLeft();
+            this.otherDirection = false;
+            this.walking = true;
+        }, 200)
+    }
 
-/**
- * Moves the Endboss to the right after a short delay.
- * 
- * - Calls `moveRight()` to start movement.
- * - Sets `otherDirection` to true (facing right).
- * - Activates walking animation flag.
- * 
- * @returns {void}
- */
-endBossWalkRight() {
-    setTimeout(() => {
-        this.moveRight();
-        this.otherDirection = true;
-        this.walking = true;
-    }, 100)
-}
+    /**
+     * Moves the Endboss to the right after a short delay.
+     * 
+     * - Calls `moveRight()` to start movement.
+     * - Sets `otherDirection` to true (facing right).
+     * - Activates walking animation flag.
+     * 
+     * @returns {void}
+     */
+    endBossWalkRight() {
+        setTimeout(() => {
+            this.moveRight();
+            this.otherDirection = true;
+            this.walking = true;
+        }, 100)
+    }
 
     /**
      * Here it checks where the character is, if this is in a certain zone, a function is called that displays images of the enboss.

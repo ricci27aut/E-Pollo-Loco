@@ -1,10 +1,12 @@
 class DrawableObejects {
+    
     offset = {
         top: 0,
         bottom: 0,
         left: 0,
         right: 0
     };
+
     imageCache = {};
     currentImage = 0;
     x = 0;

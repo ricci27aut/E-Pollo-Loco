@@ -78,26 +78,27 @@ class Character extends MovableObject {
 
     walking_sound = new Audio('audio/walking.mp3');
     jumping_sound = new Audio('audio/jumping.mp3');
-    idle_sound    = new Audio('audio/snoring.mp3');
-    hurt_sound    = new Audio('audio/character-hurt.mp3');
+    idle_sound = new Audio('audio/snoring.mp3');
+    hurt_sound = new Audio('audio/character-hurt.mp3');
 
     height = 260;
-    width  = 160;
-    y      = 170;
-    speed  = 5;
+    width = 160;
+    y = 170;
+    speed = 5;
 
-    bottleEnergy     = 0;
-    bottleCollected  = 0;
+    bottleEnergy = 0;
+    bottleCollected = 0;
 
     jumpIntervalId = 0;
-    jumpInterval   = null;
+    jumpInterval = null;
 
     intervalTime = 0;
-    idleTime     = 0;
+    idleTime = 0;
 
-    SPACE     = false;
-    jumping   = false;
-    longIdle  = false;
+    SPACE = false;
+    jumping = false;
+    longIdle = false;
+    inAir = false;
 
     world;
     looksRight;
@@ -179,13 +180,19 @@ class Character extends MovableObject {
      * Plays the first jump frame immediately for a smooth response.
      */
     jumpAnimation() {
-        if (this.jumpIntervalId == 0) {
-            this.playAnimationJump(this.IMAGES_JUMPING);
-            this.jumpInterval = setInterval(() => {
-                this.playAnimationJump(this.IMAGES_JUMPING);
-            }, 200);
-            this.jumpIntervalId++;
+        if (this.jumpIntervalId != 0) {
+            this.idle_sound.pause();
+            return;
         }
+
+        this.currentImageJump = 0;
+        this.playAnimationJump(this.IMAGES_JUMPING);
+
+        this.jumpInterval = setInterval(() => {
+            this.playAnimationJump(this.IMAGES_JUMPING);
+        }, 60);
+
+        this.jumpIntervalId = 1;
         this.idle_sound.pause();
     }
 
@@ -246,12 +253,6 @@ class Character extends MovableObject {
      * - Updates camera position
      */
     intervalForMovement() {
-        // Single jump trigger (prevents double jump)
-        if (this.world.keyboard.SPACE && !this.inAir && !this.isAboveGround() && !this.jumping) {
-            this.jumping = true;
-            this.inAir   = true;
-        }
-
         this.walking_sound.pause();
         this.characterMovesRight();
         this.characterMovesLeft();
@@ -269,7 +270,7 @@ class Character extends MovableObject {
             }
             this.moveRight();
             this.otherDirection = false;
-            this.looksLeft  = false;
+            this.looksLeft = false;
             this.looksRight = true;
             this.resetLongIdle();
         }
@@ -286,44 +287,44 @@ class Character extends MovableObject {
             this.moveLeft();
             this.resetLongIdle();
             this.otherDirection = true;
-            this.looksLeft  = true;
+            this.looksLeft = true;
             this.looksRight = false;
         }
     }
 
- /**
- * Executes the jump action and delegates post-jump cleanup.
- */
-characterJumps() {
-    if (this.jumping && !this.isAboveGround()) {
+    /**
+    * Executes the jump action and delegates post-jump cleanup.
+    */
+    characterJumps() {
+        const pressed = this.world.keyboard.SPACE;
+        const onGround = !this.isAboveGround();
+        const canJump = pressed && onGround && !this.jumping && !this.inAir;
+        if (!canJump) return;
+
+        this.jumping = true;
+        this.inAir = true;
         this.jump();
-
-        // Schedule cleanup and reset after jump
-        setTimeout(() => {
-            this.finishJump();
-        }, 500);
-
         this.resetLongIdle();
 
-        if (!muteSounds) {
-            this.jumping_sound.currentTime = 0;
-            this.jumping_sound.play();
-        }
+        if (muteSounds) return;
+        this.jumping_sound.currentTime = 0;
+        this.jumping_sound.play();
     }
-}
 
-/**
- * Resets all jump-related flags and intervals after the jump ends.
- */
-finishJump() {
-    this.jumping = false;
-    if (this.jumpInterval) {
-        clearInterval(this.jumpInterval);
-        this.jumpInterval = null;
+    /**
+     * Resets all jump-related flags and intervals after the jump ends.
+     */
+    finishJump() {
+        this.jumping = false;
+        this.inAir = false;
+
+        if (this.jumpInterval) {
+            clearInterval(this.jumpInterval);
+            this.jumpInterval = null;
+        }
+
+        this.jumpIntervalId = 0;
     }
-    this.jumpIntervalId = 0;
-    this.inAir = false;
-}
 
     /**
      * Updates bottle-related stats when a bottle is collected.

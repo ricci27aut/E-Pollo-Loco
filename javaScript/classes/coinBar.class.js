@@ -1,4 +1,5 @@
 class CoinBar extends DrawableObejects {
+
     IMAGES_COIN_BAR = [
         'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png',
         'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/20.png',
@@ -7,6 +8,7 @@ class CoinBar extends DrawableObejects {
         'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/80.png',
         'img/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png',
     ];
+    
     coinPersentage = 100;
 
     
