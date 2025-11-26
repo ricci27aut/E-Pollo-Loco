@@ -242,11 +242,19 @@ function restartGame() {
 
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    document.getElementById('game-over-buttons').classList.add('none');
+    toggleNoneButtons();
+   
+    init();
+}
+
+/**
+ * Hides the game-over buttons by adding the `none` class,
+ */
+function toggleNoneButtons() {
+ document.getElementById('game-over-buttons').classList.add('none');
     document.getElementById('play-button').classList.remove('none');
     document.getElementById('footer').classList.remove('none');
     document.getElementById('menu-bottom').classList.add('none');
-    init();
 }
 
 /**
@@ -262,23 +270,25 @@ function toggleNoneMobileButton() {
  * Uses legacy keyCode mapping for compatibility with existing code.
  */
 window.addEventListener('keydown', (e) => {
-    if (e.keyCode == 39) {
-        keyboard.RIGHT = true;
-    }
-    if (e.keyCode == 37) {
-        keyboard.LEFT = true;
-    }
-    if (e.keyCode == 38) {
-        keyboard.UP = true;
-    }
-    if (e.keyCode == 40) {
-        keyboard.DOWN = true;
-    }
-    if (e.keyCode == 32) {
-        keyboard.SPACE = true;
-    }
-    if (e.keyCode == 84) {
-        keyboard.T = true;
+    switch (e.code) {
+        case 'ArrowRight':
+            keyboard.RIGHT = true;
+            break;
+        case 'ArrowLeft':
+            keyboard.LEFT = true;
+            break;
+        case 'ArrowUp':
+            keyboard.UP = true;
+            break;
+        case 'ArrowDown':
+            keyboard.DOWN = true;
+            break;
+        case 'Space':
+            keyboard.SPACE = true;
+            break;
+        case 'KeyT':
+            keyboard.T = true;
+            break;
     }
 });
 
@@ -287,23 +297,25 @@ window.addEventListener('keydown', (e) => {
  * Uses legacy keyCode mapping for compatibility with existing code.
  */
 window.addEventListener('keyup', (e) => {
-    if (e.keyCode == 39) {
-        keyboard.RIGHT = false;
-    }
-    if (e.keyCode == 37) {
-        keyboard.LEFT = false;
-    }
-    if (e.keyCode == 38) {
-        keyboard.UP = false;
-    }
-    if (e.keyCode == 40) {
-        keyboard.DOWN = false;
-    }
-    if (e.keyCode == 32) {
-        keyboard.SPACE = false;
-    }
-    if (e.keyCode == 84) {
-        keyboard.T = false;
+    switch (e.code) {
+        case 'ArrowRight':
+            keyboard.RIGHT = false;
+            break;
+        case 'ArrowLeft':
+            keyboard.LEFT = false;
+            break;
+        case 'ArrowUp':
+            keyboard.UP = false;
+            break;
+        case 'ArrowDown':
+            keyboard.DOWN = false;
+            break;
+        case 'Space':
+            keyboard.SPACE = false;
+            break;
+        case 'KeyT':
+            keyboard.T = false;
+            break;
     }
 });
 
@@ -360,4 +372,12 @@ function startGameWorld() {
 
     mobileBtn();
     checkIfGameIsOver();
+}
+
+/**
+    * Reloads the game by restarting and starting a new session.
+ */
+function reloadGame(){
+    restartGame();
+    startTheGame();
 }
