@@ -28,24 +28,8 @@ class World {
             this.checkCollisions();
             this.setWorld();
             this.throwBottle();
-            this.backgroundSounds();
+            startBackgroundSounds(this);
         }
-    }
-
-    /**
-     * Periodically controls background audio playback based on the global mute flag.
-     * Interval: every 20 ms.
-     * @returns {void}
-     */
-    backgroundSounds() {
-        setInterval(() => {
-            if (!muteSounds) {
-                this.backgroundSound.volume = 0.1;
-                this.backgroundSound.play();
-            } else {
-                this.backgroundSound.pause();
-            }
-        }, 20)
     }
 
     /**
@@ -66,7 +50,6 @@ class World {
 
     /**
      * Listens for the 'T' key and, if bottles are available and the cooldown
-     * @returns {void}
      */
     throwBottle() {
         setInterval(() => {
@@ -83,9 +66,7 @@ class World {
     }
 
     /**
-     * Creates and registers a new thrown bottle object; updates character bottle energy and HUD.
-     * Also resets the character's long-idle state.
-     * @returns {void}
+     * Creates and registers a new thrown bottle object; updates character bottle energy and HUD. Also resets the character's long-idle state.
      */
     createBottle() {
         this.bottleThrowTimeBetween = new Date().getTime();
@@ -133,20 +114,27 @@ class World {
     }
 
     /**
-     * Determines whether the character is above a chicken and resolves the outcome:
+     * Determines if the character is above the chicken during a collision
      */
     isCharacterAboveTheChicken(i) {
         this.level.enemies[i].attack = true;
 
-        const falling = this.character.speedY < 0;
+        const falling = this.character.inAir && this.character.speedY < 0;
         const enemy = this.level.enemies[i];
         const charBottom = this.character.y + this.character.height - this.character.offset.bottom;
         const enemyBottom = enemy.y + enemy.height - enemy.offset.bottom;
         const aboveEnemy = charBottom <= enemyBottom;
 
+        this.resolveChickenCollision(i, falling, aboveEnemy);
+    }
+
+    /**
+    * Resolves the collision outcome between the character and a chicken based on vertical positions.
+    */
+    resolveChickenCollision(i, falling, aboveEnemy) {
         if (falling && aboveEnemy) {
             this.checkIfEnbossOrChicken(i);
-        } else {
+        } else if (!this.character.justStomped) {
             this.character.hit();
             this.healthBar.setPercentage(
                 this.character.energy,
@@ -156,27 +144,31 @@ class World {
     }
 
     /**
-     * Resolves whether the collided enemy is the Endboss or a regular chicken.
-     * - i === 0 → Endboss (handled elsewhere)
-     * @param {number} i - Index of the enemy in `this.level.enemies`.
+    * Handles the case where the character stomps on a chicken enemy.
      */
     checkIfEnbossOrChicken(i) {
         if (i > 0) {
-            this.level.enemies[i].chickenEnergy = 0;
-            this.level.enemies[i].offset = {
-                top: 100, left: -20,};
-                
-            setTimeout(() => {
-                this.level.enemies.splice(i, 1);
-            }, 300);
-            this.character.finishJump();
-            this.character.currentImageJump = 0;
-            this.character.jump('chickenJump');
-            this.character.inAir = true;
+            this.handleChickenStomp(i);
+        }
+    }
 
-            if (!muteSounds) {
-                this.character.jumping_sound.currentTime = 0;
-                this.character.jumping_sound.play();} }
+    /**
+    * Processes the logic for when the character successfully stomps on a chicken.
+    */
+    handleChickenStomp(i) {
+        this.character.justStomped = true;
+        setTimeout(() => { this.character.justStomped = false; }, 100);
+
+        this.level.enemies[i].chickenEnergy = 0;
+        this.level.enemies[i].offset = { top: 100, left: -20 };
+        setTimeout(() => { this.level.enemies.splice(i, 1); }, 300);
+
+        this.character.finishJump();
+        this.character.currentImageJump = 0;
+        this.character.jump('chickenJump');
+        this.character.inAir = true;
+
+        if (!muteSounds) { this.character.jumping_sound.currentTime = 0; this.character.jumping_sound.play(); }
     }
 
     /**

@@ -131,13 +131,16 @@ class MovableObject extends DrawableObejects {
     * check if NPC got a hit
     */
     hit() {
-        this.energy -= 5;
-        if (this.energy < 0) {
-            this.energy = 0;
-        } else {
-            this.lastHit = new Date().getTime();
-        }
+    this.energy -= 5;
+
+    if (this.energy <= 15) {
+        this.energy = 0;
     }
+
+    if (this.energy > 0) {
+        this.lastHit = new Date().getTime();
+    }
+}
 
     /**
     * check if NPC got a hit

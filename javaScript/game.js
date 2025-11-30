@@ -375,9 +375,23 @@ function startGameWorld() {
 }
 
 /**
-    * Reloads the game by restarting and starting a new session.
+* Reloads the game by restarting and starting a new session.
  */
 function reloadGame(){
     restartGame();
     startTheGame();
+}
+
+/**
+* Starts background sounds if not muted.
+ */
+function startBackgroundSounds(world) {
+    setInterval(() => {
+        if (!muteSounds) {
+            world.backgroundSound.volume = 0.1;
+            world.backgroundSound.play();
+        } else {
+            world.backgroundSound.pause();
+        }
+    }, 20);
 }

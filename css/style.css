@@ -16,7 +16,10 @@ body {
     text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.83);
     color: #ffcc00;
     height: 100vh;
-    padding: clamp(0.3125rem, -0.125rem + 2.1875vw, 2.5rem) clamp(0.25rem, -0.2rem + 2.25vw, 2.5rem) clamp(0.3125rem, -0.125rem + 2.1875vw, 2.5rem) clamp(0.25rem, -0.2rem + 2.25vw, 2.5rem);
+    padding: clamp(0.3125rem, -0.125rem + 2.1875vw, 2.5rem)
+             clamp(0.25rem, -0.2rem + 2.25vw, 2.5rem)
+             clamp(0.3125rem, -0.125rem + 2.1875vw, 2.5rem)
+             clamp(0.25rem, -0.2rem + 2.25vw, 2.5rem);
     justify-content: space-between;
 }
 
@@ -32,8 +35,10 @@ canvas {
     box-shadow: 0px 0px 109px 43px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
 }
- 
 
+.section-canvas {
+    /* Behälter für Canvas-Sektion, bleibt für Desktop normal */
+}
 
 .description {
     text-align: center;
@@ -95,7 +100,8 @@ canvas {
     width: 40px;
 }
 
-.control_panel_left, .control_panel_right {
+.control_panel_left,
+.control_panel_right {
     display: flex;
     gap: 20px;
 }
@@ -116,7 +122,8 @@ canvas {
     transition: 0.3s all;
 }
 
-.play-button:hover, .game-over-buttons button:hover {
+.play-button:hover,
+.game-over-buttons button:hover {
     background-color: #ffcc00;
     cursor: pointer;
 }
@@ -160,6 +167,7 @@ canvas {
     bottom: 0;
     gap: 60px;
     background-color: rgba(0, 0, 0, 0.83);
+    z-index: 999;
 }
 
 .phone-message img {
@@ -193,7 +201,7 @@ footer a:hover {
     height: 40px; 
 }
 
-.none{
+.none {
     display: none !important;
 }
 
@@ -213,19 +221,8 @@ footer a:hover {
 
     .container {
         width: 100vw;
-    } 
-
-    .phone-message {
-        display: flex;
     }
 }
-
-@media only screen and (max-width: 1370px) {
-    .phone-message {
-        display: flex;
-    }
-}
-
 
 @media only screen and (max-height: 480px) {
     canvas {
@@ -247,69 +244,34 @@ footer a:hover {
     body {
         padding: 0;
     }
-
 }
 
-@media screen and (orientation: landscape) and (max-width: 1370px) and (max-height: 870px) {
-    .phone-message {
-        display: none !important;
-    }
-
-    .section-canvas {
-        width: 100vw !important;
-        height: 100vh;
-    }
-
-    canvas {
-        width: 100vw !important;
-        border-radius: 0px;
-        height: 100vh;
-    }
-
-    .controls_top {
-        width: 100vw !important;
-    }
-
+@media (pointer: coarse) {
     .controls_bottom {
-        display: flex;
-        width: 100vw !important;
-    }
-
-    .container {
-        width: 100vw;
-    } 
-
-    .game-over-buttons {
-        width: 100vw !important;
-    }
-
-    .phone-message {
         display: flex;
     }
 
     .screen-button {
         display: none;
     }
+}
 
-    h1 {
-        display: none;
+@media (pointer: coarse) and (orientation: portrait) {
+    .phone-message {
+        display: flex;
     }
 
-    h2 {
+    .section-canvas {
         display: none;
-    }
-
-    body {
-        padding: 0;
     }
 
     footer {
-        position: absolute;
-        bottom: 4%;
+        display: none;
     }
 }
 
-@media screen and (orientation: landscape) and (min-width: 1360px) and (max-width: 1370px) and (min-height: 1023px)and (max-height: 1025px) {
+
+@media (pointer: coarse) and (orientation: landscape) {
     .phone-message {
         display: none !important;
     }
@@ -321,8 +283,8 @@ footer a:hover {
 
     canvas {
         width: 100vw !important;
-        border-radius: 0px;
         height: 100vh;
+        border-radius: 0px;
     }
 
     .controls_top {
@@ -336,77 +298,10 @@ footer a:hover {
 
     .container {
         width: 100vw;
-    } 
+    }
 
     .game-over-buttons {
         width: 100vw !important;
-    }
-
-    .phone-message {
-        display: flex;
-    }
-
-    .screen-button {
-        display: none;
-    }
-
-    h1 {
-        display: none;
-    }
-
-    h2 {
-        display: none;
-    }
-
-    body {
-        padding: 0;
-    }
-
-    footer {
-        position: absolute;
-        bottom: 4%;
-    }
-}
-
-@media screen and (orientation: landscape) and (min-width: 1360px) and (max-width: 1370px) and (min-height: 912px)and (max-height: 912px) {
-    .phone-message {
-        display: none !important;
-    }
-
-    .section-canvas {
-        width: 100vw !important;
-        height: 100vh;
-    }
-
-    canvas {
-        width: 100vw !important;
-        border-radius: 0px;
-        height: 100vh;
-    }
-
-    .controls_top {
-        width: 100vw !important;
-    }
-
-    .controls_bottom {
-        display: flex;
-        width: 100vw !important;
-    }
-
-    .container {
-        width: 100vw;
-    } 
-
-    .game-over-buttons {
-        width: 100vw !important;
-    }
-
-    .phone-message {
-        display: flex;
-    }
-
-    .screen-button {
-        display: none;
     }
 
     h1 {

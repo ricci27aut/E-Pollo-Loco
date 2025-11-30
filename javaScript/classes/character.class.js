@@ -99,6 +99,7 @@ class Character extends MovableObject {
     jumping = false;
     longIdle = false;
     inAir = false;
+    justStomped = false;
 
     world;
     looksRight;
